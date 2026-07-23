@@ -88,6 +88,12 @@ const cautionData = {
 
 let quizStartTime = 0; // ตัวแปรสำหรับเริ่มจับเวลาทำแบบทดสอบ
 
+// จำนวนข้อ -> เวลาที่ให้ทำ (วินาที)
+const quizTimeLimits = { 10: 10 * 60, 20: 15 * 60, 45: 40 * 60 };
+let quizTimeLimitSec = 0;
+let quizTimerInterval = null;
+let quizTimedOut = false;
+
 // ================= Preload รูปทั้งหมดล่วงหน้า (แก้บัคเปลี่ยนรูปช้า) =================
 const imageCache = {};
 function preloadAllImages() {
@@ -178,6 +184,30 @@ function toggleInfoModal(show) {
 function closeModalOnBackdrop(event) {
     if (event.target.id === 'info-modal') toggleInfoModal(false);
 }
+
+// ================= โมดัลแจ้งเตือนกลางจอ (แทน alert ปกติ) =================
+let celebrateOnClose = null;
+
+function showCelebrateModal(title, message, iconId, onClose) {
+    document.getElementById('celebrate-title').innerText = title;
+    document.getElementById('celebrate-message').innerText = message;
+    document.getElementById('celebrate-icon').innerHTML = `<svg class="icon"><use href="#${iconId || 'icon-award'}"/></svg>`;
+    celebrateOnClose = typeof onClose === 'function' ? onClose : null;
+    document.getElementById('celebrate-modal').classList.remove('hidden');
+}
+
+function hideCelebrateModal() {
+    document.getElementById('celebrate-modal').classList.add('hidden');
+    const cb = celebrateOnClose;
+    celebrateOnClose = null;
+    if (cb) cb();
+}
+
+function closeCelebrateOnBackdrop(event) {
+    if (event.target.id === 'celebrate-modal') hideCelebrateModal();
+}
+
+document.getElementById('celebrate-ok-btn').addEventListener('click', hideCelebrateModal);
 
 function updateHomeState() {
     let progress = Math.min(userData.learnedIndex , katakanaData.length);
@@ -312,8 +342,7 @@ function nextLearn() {
         currentLearnIdx++;
         updateLearnCard();
     } else {
-        alert("ยินดีด้วย! เรียนจบหมดแล้ว ไปทำแบบทดสอบกันเถอะ");
-        showPage('page-home');
+        showCelebrateModal('ยินดีด้วย!', 'เรียนจบหมดแล้ว ไปทำแบบทดสอบกันเถอะ', 'icon-award', () => showPage('page-home'));
     }
 }
 function prevLearn() {
@@ -329,22 +358,88 @@ let currentQuizIdx = 0;
 let quizScore = 0;
 
 function setupQuiz() {
+    updateQuizSetupInfo();
     showPage('page-quiz-setup');
+}
+
+function formatMMSS(totalSeconds) {
+    const m = Math.floor(totalSeconds / 60);
+    const s = totalSeconds % 60;
+    return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+}
+
+function updateQuizSetupInfo() {
+    const count = parseInt(document.getElementById('quiz-count').value);
+    const limitSec = quizTimeLimits[count] || 0;
+    const minutes = Math.round(limitSec / 60);
+    document.getElementById('quiz-info-time').innerText = `${minutes} นาที`;
 }
 
 function startQuiz() {
     let count = parseInt(document.getElementById('quiz-count').value);
     count = Math.min(count, katakanaData.length);
-    quizStartTime = Date.now(); 
-    
+    quizStartTime = Date.now();
+    quizTimedOut = false;
+    quizTimeLimitSec = quizTimeLimits[count] || (count * 53);
+
     quizQuestions = [...katakanaData].sort(() => 0.5 - Math.random()).slice(0, count);
     currentQuizIdx = 0;
     quizScore = 0;
-    userData.wrongHistory = []; 
-    
+    userData.wrongHistory = [];
+
     document.getElementById('quiz-total-q').innerText = count;
     showPage('page-quiz-active');
+    startQuizTimer();
     loadQuizQuestion();
+}
+
+// ================= จับเวลานับถอยหลังระหว่างทำแบบทดสอบ =================
+function startQuizTimer() {
+    stopQuizTimer();
+    updateQuizTimerDisplay(quizTimeLimitSec);
+
+    quizTimerInterval = setInterval(() => {
+        const elapsed = Math.floor((Date.now() - quizStartTime) / 1000);
+        const remaining = quizTimeLimitSec - elapsed;
+
+        if (remaining <= 0) {
+            updateQuizTimerDisplay(0);
+            handleQuizTimeUp();
+        } else {
+            updateQuizTimerDisplay(remaining);
+        }
+    }, 1000);
+}
+
+function stopQuizTimer() {
+    if (quizTimerInterval) {
+        clearInterval(quizTimerInterval);
+        quizTimerInterval = null;
+    }
+}
+
+function updateQuizTimerDisplay(remainingSec) {
+    const timerEl = document.getElementById('quiz-timer');
+    const pillEl = document.getElementById('quiz-timer-pill');
+    const fillEl = document.getElementById('quiz-timer-fill');
+    if (timerEl) timerEl.innerText = formatMMSS(Math.max(0, remainingSec));
+
+    if (quizTimeLimitSec > 0 && fillEl) {
+        const percentLeft = Math.max(0, Math.min(100, (remainingSec / quizTimeLimitSec) * 100));
+        fillEl.style.width = `${percentLeft}%`;
+    }
+
+    const isLow = quizTimeLimitSec > 0 && remainingSec <= Math.max(30, quizTimeLimitSec * 0.15);
+    if (pillEl) pillEl.classList.toggle('timer-warning', isLow);
+    if (fillEl) fillEl.classList.toggle('timer-warning', isLow);
+}
+
+function handleQuizTimeUp() {
+    stopQuizTimer();
+    quizTimedOut = true;
+    quizScore = 0;
+    document.querySelectorAll('.choice-btn').forEach(btn => btn.disabled = true);
+    showQuizResult();
 }
 
 function loadQuizQuestion() {
@@ -392,19 +487,24 @@ function nextQuizQuestion() {
     if (currentQuizIdx < quizQuestions.length) {
         loadQuizQuestion();
     } else {
+        stopQuizTimer();
         showQuizResult();
     }
 }
 
 function showQuizResult() {
-    const timeTakenMs = Date.now() - quizStartTime; 
+    stopQuizTimer();
+
+    const timeTakenMs = Date.now() - quizStartTime;
     const totalSeconds = Math.floor(timeTakenMs / 1000);
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
-    
+
     let timeString = minutes > 0 ? `${minutes} นาที ${seconds} วินาที` : `${seconds} วินาที`;
 
     const percent = Math.round((quizScore / quizQuestions.length) * 100);
+
+    document.getElementById('result-timeup-banner').classList.toggle('hidden', !quizTimedOut);
 
     userData.totalQuizzes += quizQuestions.length;
     userData.totalCorrect += quizScore;
@@ -428,7 +528,10 @@ function showQuizResult() {
     document.getElementById('result-time').innerText = timeString;
 
     let wrongHTML = '';
-    if (userData.wrongHistory.length > 0) {
+    if (quizTimedOut) {
+        wrongHTML = '<p>ทำแบบทดสอบไม่ทันเวลา ลองใหม่อีกครั้งนะ</p>';
+        document.getElementById('btn-review-wrong').classList.add('hidden');
+    } else if (userData.wrongHistory.length > 0) {
         wrongHTML = '<p><strong>คุณตอบผิด:</strong></p>';
         userData.wrongHistory.forEach(id => {
             let item = katakanaData.find(k => k.id === id);
@@ -458,7 +561,7 @@ function startReview(mode) {
     }
     
     if (reviewQueue.length === 0) {
-        alert("ไม่มีคำศัพท์ในหมวดนี้ให้ทบทวนครับ!");
+        showCelebrateModal('ยังไม่มีคำศัพท์', 'ไม่มีคำศัพท์ในหมวดนี้ให้ทบทวนครับ!', 'icon-info', null);
         return;
     }
     
@@ -499,8 +602,7 @@ function markReview(isRemembered) {
     if (currentReviewIdx < reviewQueue.length) {
         loadReviewCard();
     } else {
-        alert("ทบทวนครบแล้ว เก่งมากครับ");
-        showPage('page-home');
+        showCelebrateModal('เก่งมาก!', 'ทบทวนครบแล้ว เก่งมากครับ', 'icon-heart', () => showPage('page-home'));
     }
 }
 

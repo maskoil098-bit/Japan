@@ -56,7 +56,7 @@
             <div class="progress-section">
                 <div class="progress-label">
                     <span>ความคืบหน้า</span>
-                    <span id="home-progress-text">0 / 46</span>
+                    <span id="home-progress-text">0 / 45</span>
                 </div>
                 <div class="progress-bar-bg"><div class="progress-bar-fill" id="home-progress-fill"></div></div>
 
@@ -110,6 +110,20 @@
             </div>
         </div>
 
+        <!-- ================= โมดัลแจ้งเตือนกลางจอ (แทน alert) ================= -->
+        <div id="celebrate-modal" class="modal-overlay hidden" onclick="closeCelebrateOnBackdrop(event)">
+            <div class="celebrate-box card text-center">
+                <div class="celebrate-icon" id="celebrate-icon">
+                    <svg class="icon"><use href="#icon-award"/></svg>
+                </div>
+                <h3 class="celebrate-title" id="celebrate-title">ยินดีด้วย!</h3>
+                <p class="celebrate-message" id="celebrate-message"></p>
+                <button class="btn btn-primary w-100 mt-15" id="celebrate-ok-btn">
+                    <svg class="icon"><use href="#icon-check"/></svg> ไปต่อ
+                </button>
+            </div>
+        </div>
+
         <!-- ================= กล่องข้อควรระวัง (มุมขวาเฉพาะหน้า Learn) ================= -->
         <div id="caution-panel" class="caution-panel card hidden">
             <h3 class="caution-heading">
@@ -125,7 +139,7 @@
             </button>
 
             <div class="progress-section text-center mb-20">
-                <div class="progress-label center"><span>เรียนแล้ว</span><span id="learn-progress-text">1 / 46</span></div>
+                <div class="progress-label center"><span>เรียนแล้ว</span><span id="learn-progress-text">1 / 45</span></div>
                 <div class="progress-bar-bg"><div class="progress-bar-fill" id="learn-progress-fill"></div></div>
             </div>
 
@@ -167,11 +181,25 @@
             <h2 class="text-center"><svg class="icon"><use href="#icon-edit"/></svg> แบบทดสอบ</h2>
             <div class="quiz-options mt-20">
                 <p>เลือกจำนวนข้อ:</p>
-                <select id="quiz-count" class="input-field">
+                <select id="quiz-count" class="input-field" onchange="updateQuizSetupInfo()">
                     <option value="10">10 ข้อ</option>
                     <option value="20">20 ข้อ</option>
-                    <option value="46">46 ข้อ</option>
+                    <option value="45">45 ข้อ</option>
                 </select>
+
+                <div class="quiz-info-box mt-15">
+                    <div class="quiz-info-time-row">
+                        <svg class="icon"><use href="#icon-clock"/></svg>
+                        <span>เวลาที่ใช้ทำข้อสอบ</span>
+                        <strong id="quiz-info-time">10 นาที</strong>
+                    </div>
+                    <ul class="quiz-rules text-small text-left">
+                        <li><svg class="icon icon-sm"><use href="#icon-zap"/></svg> ระบบจะเริ่มจับเวลาทันทีที่กด "เริ่มทดสอบ"</li>
+                        <li><svg class="icon icon-sm"><use href="#icon-check"/></svg> ตอบให้ครบทุกข้อภายในเวลาที่กำหนด</li>
+                        <li><svg class="icon icon-sm"><use href="#icon-alert"/></svg> หากทำไม่ทันเวลา ระบบจะเด้งไปหน้าสรุปผลทันทีและได้ <strong>0 คะแนน</strong></li>
+                    </ul>
+                </div>
+
                 <button class="btn btn-primary mt-20 w-100" onclick="startQuiz()">
                     <svg class="icon"><use href="#icon-play"/></svg> เริ่มทดสอบ
                 </button>
@@ -181,7 +209,14 @@
         <!-- ================= หน้า ทำ Quiz ================= -->
         <div id="page-quiz-active" class="page card text-center">
             <div class="progress-section mb-20">
-                <p class="quiz-count-label">ข้อที่ <span id="quiz-current-q">1</span> / <span id="quiz-total-q">10</span></p>
+                <div class="quiz-active-top">
+                    <p class="quiz-count-label">ข้อที่ <span id="quiz-current-q">1</span> / <span id="quiz-total-q">10</span></p>
+                    <div class="timer-pill" id="quiz-timer-pill">
+                        <svg class="icon icon-sm"><use href="#icon-clock"/></svg>
+                        <span id="quiz-timer">10:00</span>
+                    </div>
+                </div>
+                <div class="progress-bar-bg mt-10"><div class="progress-bar-fill timer-bar" id="quiz-timer-fill"></div></div>
             </div>
 
             <div class="quiz-question my-20">
@@ -199,6 +234,11 @@
         <!-- ================= หน้าสรุปผล Quiz ================= -->
         <div id="page-quiz-result" class="page card text-center">
             <h2><svg class="icon"><use href="#icon-award"/></svg> สรุปผลคะแนน</h2>
+
+            <div id="result-timeup-banner" class="timeup-banner hidden">
+                <svg class="icon"><use href="#icon-alert"/></svg>
+                หมดเวลา! ทำแบบทดสอบไม่ทันตามกำหนด จึงได้ 0 คะแนน
+            </div>
 
             <div class="score-display my-20">
                 <h1 id="result-score">18 / 20</h1>
