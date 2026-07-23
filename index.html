@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katakana Memory</title>
+    <!-- นำเข้า Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Sans+Thai:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- รูปพื้นหลังเบลอๆ -->
+    <div class="bg-overlay"></div>
+
+    <div class="app-container">
+        
+        <!-- ================= หน้า Home ================= -->
+        <div id="page-home" class="page active glass-card text-center">
+            <h1>
+                <span style="display: block; font-size: 55px; margin-bottom: 10px;">🌸</span>
+                Katakana Memory
+            </h1>
+            <p class="subtitle">เรียนคาตาคานะด้วยภาพจำ</p>
+            
+            <div class="progress-section">
+                <p>Progress <span id="home-progress-text">0 / 46</span></p>
+                <div class="progress-bar-bg"><div class="progress-bar-fill" id="home-progress-fill"></div></div>
+                
+                <!-- ⚡ เปลี่ยนเป็น Streak และ 🎯 ความแม่นยำ -->
+                <div class="stats-box" style="display: flex; justify-content: center; gap: 10px; margin-top: 10px;">
+                    <span class="text-small" style="background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 15px;">
+                        ⚡ Streak: <span id="home-streak" class="text-warning">1</span> วัน
+                    </span>
+                    <span class="text-small" style="background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 15px;">
+                        🎯 ความแม่นยำ: <span id="home-accuracy" class="text-success">0%</span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="button-group mt-20">
+                <button class="btn-primary" onclick="startLearn()">🚀 เริ่มเรียน</button>
+                <button class="btn-quiz" onclick="setupQuiz()">📝 แบบทดสอบ</button>
+                <button class="btn-review" onclick="startReview('all')">⭐ ทบทวน</button>
+                <button class="btn-warning mt-10 w-100" style="background: linear-gradient(135deg, #e74c3c, #c0392b); color: white;" onclick="showPage('page-caution')">⚠️ ข้อควรระวัง & จุดสับสน</button>
+            </div>
+        </div>
+    <div class="info-panel glass-card">
+            <h3>📌 แนะนำการใช้งาน</h3>
+            <ul>
+                <li><strong>🚀 เริ่มเรียน:</strong> เรียนรู้คาตาคานะใหม่ทีละตัว พร้อมภาพช่วยจำและวิธีจำเพื่อสร้างการเชื่อมโยงในสมอง</li>
+                <li><strong>📝 แบบทดสอบ:</strong> สุ่มคำถามประเมินความจำ พร้อมระบบคำนวณดาว <strong>⭐</strong>, เวลาที่ใช้ <strong>⏳</strong>, และเก็บบันทึกความแม่นยำ <strong>🎯</strong></li>
+                <li><strong>⭐ ทบทวน:</strong> ระบบ Flashcard สำหรับทบทวนเน้นเฉพาะตัวที่เพิ่งตอบผิด</li>
+                <li><strong>⚡ สถิติผู้ใช้:</strong> ติดตามความต่อเนื่องในการเรียนด้วย Streak และเปอร์เซ็นต์ความแม่นยำเฉลี่ย</li>
+            </ul>
+            <hr class="divider">
+            <p class="text-small"><strong>จุดประสงค์:</strong> สื่อชิ้นนี้สร้างขึ้นเพื่อแก้ปัญหาการลืมตัวอักษร โดยประยุกต์ใช้เทคนิค Mnemonic (ภาพช่วยจำ) ร่วมกับ Spaced Repetition (การทบทวนซ้ำ)</p>
+        </div>
+        <!-- ================= กล่องข้อควรระวัง (มุมขวาเฉพาะหน้า Learn) ================= -->
+        <div id="caution-panel" class="caution-panel glass-card hidden">
+             <h3 class="text-warning mb-10" style="margin-top:0; text-align: center; color: #ee5f5f;">
+                <span style="display: inline-block; position: relative;">
+                    <span style="position: absolute; left: -32px; top: -3px; font-size: 22px;">⚠️</span>
+                    ข้อควรระวัง
+                </span>
+            </h3>
+            <div id="caution-content">
+                <!-- เนื้อหาจะถูกสร้างและเปลี่ยนอัตโนมัติด้วย JavaScript -->
+            </div>
+        </div>
+
+        <!-- ================= หน้า เรียน (Learn) ================= -->
+        <div id="page-learn" class="page glass-card">
+            <button class="btn-icon top-left" onclick="showPage('page-home')">🏠</button>
+            
+            <div class="progress-section text-center mb-20">
+                <p>เรียนแล้ว <span id="learn-progress-text">1 / 46</span></p>
+                <div class="progress-bar-bg"><div class="progress-bar-fill" id="learn-progress-fill"></div></div>
+            </div>
+
+            <div class="card-content text-center" id="learn-card-anim">
+                <div class="kana-large" id="learn-kana">ア</div>
+                
+                <!-- เปลี่ยนเป็นแท็ก img สำหรับใส่รูปจริง -->
+                <div class="image-container">
+                    <img id="learn-img" src="" alt="รูปภาพช่วยจำ" class="visual-img">
+                </div>
+                <div class="visual-text" id="learn-visual">คนกางแขน</div>
+                
+                <div class="sound-box my-15">
+                    <span class="romaji-text" id="learn-romaji">[a]</span>
+                    <button class="btn-sound ml-10" onclick="playSound(document.getElementById('learn-kana').innerText)">🔊</button>
+                </div>
+
+                <hr class="divider">
+                
+                <div class="mnemonic-box text-center">
+                    <p class="mnemonic-title"><span class="mnemonic-icon">💡</span><strong>วิธีจำ</strong></p>
+                    <p id="learn-mnemonic">ア เหมือนคนกางแขนร้อง "อาาา"</p>
+                </div>
+            </div>
+
+            <div class="nav-buttons mt-20">
+                <button class="btn-secondary" onclick="prevLearn()">◀ ก่อนหน้า</button>
+                <button class="btn-primary" onclick="nextLearn()">ถัดไป ▶</button>
+            </div>
+        </div>
+
+        <!-- ================= หน้า ตั้งค่า Quiz ================= -->
+        <div id="page-quiz-setup" class="page glass-card">
+            <button class="btn-icon top-left" onclick="showPage('page-home')">←</button>
+            <h2 class="text-center">📝 แบบทดสอบ</h2>
+            <div class="quiz-options mt-20">
+                <p>เลือกจำนวนข้อ:</p>
+                <select id="quiz-count" class="glass-input">
+                    <option value="10">10 ข้อ</option>
+                    <option value="20">20 ข้อ</option>
+                    <option value="46">46 ข้อ</option>
+                </select>
+                <button class="btn-quiz mt-20 w-100" onclick="startQuiz()">🚀 เริ่มทดสอบ</button>
+            </div>
+        </div>
+
+        <!-- ================= หน้า ทำ Quiz ================= -->
+        <div id="page-quiz-active" class="page glass-card text-center">
+            <div class="progress-section mb-20">
+                <p>ข้อที่ <span id="quiz-current-q">1</span> / <span id="quiz-total-q">10</span></p>
+            </div>
+
+            <div class="quiz-question my-20">
+                <div class="kana-large" id="quiz-display">ア</div>
+            </div>
+
+            <div class="quiz-choices" id="quiz-choices">
+                <!-- ปุ่มช้อยส์จะถูกสร้างด้วย JS -->
+            </div>
+            
+            <div id="quiz-feedback" class="feedback-box hidden mt-15"></div>
+            <button id="btn-next-quiz" class="btn-primary mt-15 hidden w-100" onclick="nextQuizQuestion()">ข้อถัดไป ▶</button>
+        </div>
+
+        <!-- ================= หน้าสรุปผล Quiz ================= -->
+        <div id="page-quiz-result" class="page glass-card text-center">
+            <h2>🎉 สรุปผลคะแนน</h2>
+            
+            <div class="score-display my-20">
+                <!-- คะแนนรวม -->
+                <h1 id="result-score">18 / 20</h1>
+                
+                <!-- ⭐ จุดแสดงดาว -->
+                <div id="result-stars" style="font-size: 26px; color: #f1c40f; margin: 5px 0;">⭐⭐⭐⭐☆</div>
+                
+                <!-- เปอร์เซ็นต์ -->
+                <p id="result-percent">90%</p>
+                
+                <!-- ⏳ จุดแสดงเวลาที่ใช้ -->
+                <div style="background: rgba(0,0,0,0.2); border-radius: 12px; padding: 8px 15px; margin: 15px auto; display: inline-block;">
+                    <span style="font-size: 14px; color: #bdc3c7;">⏳ ใช้เวลา: </span>
+                    <span id="result-time" style="font-size: 16px; font-weight: bold; color: #ffffff;">0 วินาที</span>
+                </div>
+            </div>
+            
+            <div id="wrong-answers-list" class="wrong-list mb-20 text-left">
+                <!-- รายการที่ตอบผิดจะแสดงตรงนี้ -->
+            </div>
+
+            <button class="btn-review w-100" id="btn-review-wrong" onclick="startReview('wrong')">📖 ทบทวนตัวที่ผิด</button>
+            <button class="btn-secondary w-100 mt-10" onclick="showPage('page-home')">🏠 กลับหน้าหลัก</button>
+        </div>
+        
+        <!-- ================= หน้า ทบทวน (Review Flashcard) ================= -->
+        <div id="page-review" class="page glass-card text-center">
+            <button class="btn-icon top-left" onclick="showPage('page-home')">🏠</button>
+            <p class="mb-10">โหมด: <span id="review-mode-text">ทั้งหมด</span> (<span id="review-remain">0</span> ตัว)</p>
+            
+            <!-- Flashcard -->
+            <div class="flashcard-container mb-20" onclick="flipReviewCard()">
+                <div class="flashcard" id="flashcard-inner">
+                    <div class="card-front">
+                        <div class="kana-giant" id="review-front-kana">ア</div>
+                        <p class="click-hint">คลิกเพื่อพลิก ↺</p>
+                    </div>
+                    <div class="card-back">
+                        <h2 id="review-back-romaji">a</h2>
+                        <img id="review-back-img" src="" class="visual-img-small">
+                        <p id="review-back-visual">คนกางแขน</p>
+                        <hr class="divider">
+                        <p id="review-back-mnemonic">อ๊ะ! กางแขนร้อง อาาา</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="review-actions hidden" id="review-actions">
+                <button class="btn-danger" onclick="markReview(false)">🤔 ลืม/จำยาก</button>
+                <button class="btn-success" onclick="markReview(true)">❤ จำได้แล้ว</button>
+            </div>
+        </div>
+        <!-- ================= หน้า ข้อควรระวัง (Caution) ================= -->
+        <div id="page-caution" class="page glass-card text-center">
+            <button class="btn-icon top-left" onclick="showPage('page-home')">🏠</button>
+            <h2 class="mb-10">💡 ข้อควรระวัง</h2>
+            
+            <div class="scrollable-content text-left">
+                <!-- คำแนะนำทั่วไป -->
+                <div class="compare-section">
+                    <h3 class="text-warning mb-10">✏️ เวลาคัดเขียน</h3>
+                    <ul class="text-small" style="line-height: 1.8;">
+                        <li>อย่าเขียนเส้นยาวเกินไป</li>
+                        <li>ตำแหน่งของ <strong>"จุด"</strong> ต้องอยู่ด้านบนเสมอ</li>
+                        <li>ระวังสลับกับตัวอักษรที่มีหน้าตาคล้ายกัน</li>
+                    </ul>
+                </div>
+
+                <!-- 4 ตัวปราบเซียน -->
+                <div class="compare-section mt-15">
+                    <h3 class="text-warning mb-10">⭐ 4 ตัวปราบเซียน (สับสนมากที่สุด)</h3>
+                    <p class="text-small text-center mb-10">จำง่ายๆ: <span class="text-dot">สีแดง = จุด</span> | <span class="text-stroke">สีน้ำเงิน = เส้นหลัก</span></p>
+                    
+                    <div class="compare-grid">
+                        <div class="compare-card text-center">
+                            <div class="kana-compare">シ</div>
+                            <p class="romaji-text mb-10">shi</p>
+                            <p class="text-small"><span class="text-dot">● ●</span> แนวนอน</p>
+                            <p class="text-small">ลาก<span class="text-stroke">เส้น</span> ซ้าย ➔ ขวา</p>
+                        </div>
+                        <div class="compare-card text-center">
+                            <div class="kana-compare">ツ</div>
+                            <p class="romaji-text mb-10">tsu</p>
+                            <p class="text-small"><span class="text-dot">●<br>●</span> แนวตั้ง</p>
+                            <p class="text-small">ลาก<span class="text-stroke">เส้น</span> บน ➔ ล่าง</p>
+                        </div>
+                        <div class="compare-card text-center">
+                            <div class="kana-compare">ソ</div>
+                            <p class="romaji-text mb-10">so</p>
+                            <p class="text-small"><span class="text-dot">●</span> 1 จุด</p>
+                            <p class="text-small"><span class="text-stroke">เส้นหลัก</span> ลงซ้าย</p>
+                        </div>
+                        <div class="compare-card text-center">
+                            <div class="kana-compare">ン</div>
+                            <p class="romaji-text mb-10">n</p>
+                            <p class="text-small"><span class="text-dot">●</span> 1 จุด</p>
+                            <p class="text-small"><span class="text-stroke">เส้นหลัก</span> ลงขวา</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- คู่สับสนอื่นๆ -->
+                <div class="compare-section mt-15">
+                    <h3 class="text-warning mb-10">🥊 คู่สับสนอื่นๆ</h3>
+                    
+                    <div class="mini-compare mb-10">
+                        <div class="kana-box">ク <span class="text-small">(ku)</span></div>
+                        <div class="vs-text">VS</div>
+                        <div class="kana-box">ケ <span class="text-small">(ke)</span></div>
+                        <div class="compare-desc"><strong>เคะ</strong> มีเส้นกากบาทเพิ่มมาตรงกลาง <strong>คุ</strong> ไม่มี</div>
+                    </div>
+
+                    <div class="mini-compare mb-10">
+                        <div class="kana-box">コ <span class="text-small">(ko)</span></div>
+                        <div class="vs-text">VS</div>
+                        <div class="kana-box">ユ <span class="text-small">(yu)</span></div>
+                        <div class="compare-desc"><strong>โคะ</strong> เป็นกรอบสี่เหลี่ยม <strong>ยุ</strong> มีหางลากยาวลงมาตรงกลาง</div>
+                    </div>
+
+                    <div class="mini-compare mb-10">
+                        <div class="kana-box">フ <span class="text-small">(fu)</span></div>
+                        <div class="vs-text">VS</div>
+                        <div class="kana-box">ワ <span class="text-small">(wa)</span></div>
+                        <div class="compare-desc"><strong>ฟุ</strong> โค้งมนลงด้านล่าง <strong>วะ</strong> ตีเส้นตรงเป็นมุมฉาก</div>
+                    </div>
+
+                    <div class="mini-compare mb-10">
+                        <div class="kana-box">レ <span class="text-small">(re)</span></div>
+                        <div class="vs-text">VS</div>
+                        <div class="kana-box">ノ <span class="text-small">(no)</span></div>
+                        <div class="compare-desc"><strong>เระ</strong> เริ่มซ้าย จบตวัดขึ้นขวา | <strong>โน</strong> เริ่มบน ลากลงล่างซ้าย</div>
+                    </div>
+
+                    <div class="mini-compare mb-10">
+                        <div class="kana-box">マ <span class="text-small">(ma)</span></div>
+                        <div class="vs-text">VS</div>
+                        <div class="kana-box">ム <span class="text-small">(mu)</span></div>
+                        <div class="compare-desc"><strong>มะ</strong> มีเส้นขีดแนวนอนด้านบน <strong>มุ</strong> ไม่มีเส้นแนวนอน</div>
+                    </div>
+
+                    <div class="mini-compare mb-10">
+                        <div class="kana-box">ナ <span class="text-small">(na)</span></div>
+                        <div class="vs-text">VS</div>
+                        <div class="kana-box">メ <span class="text-small">(me)</span></div>
+                        <div class="compare-desc"><strong>นะ</strong> ตัดกันเหมือนเครื่องหมายบวก (+) <strong>เมะ</strong> คล้ายกากบาท (X)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
