@@ -68,10 +68,10 @@ const katakanaData = [
 
 // ================= ข้อมูลคู่สับสน (จะโชว์มุมขวาอัตโนมัติ) =================
 const cautionData = {
-    'シ': { vs: 'ツ', vsRomaji: 'tsu', title: '⭐ คนสับสนเยอะที่สุด', desc: '<span class="text-dot">● ●</span> จุดเรียง <strong>"แนวนอน"</strong><br><span class="text-stroke">──</span> ลากเส้นจากซ้าย ➔ ขวา<br><br>⚠️ ระวังสลับกับ ツ' },
-    'ツ': { vs: 'シ', vsRomaji: 'shi', title: '⭐ คนสับสนเยอะที่สุด', desc: '<span class="text-dot">●<br>●</span> จุดเรียง <strong>"แนวตั้ง"</strong><br><span class="text-stroke">│</span> ลากเส้นจากบน ➔ ล่าง<br><br>⚠️ ระวังสลับกับ シ' },
-    'ソ': { vs: 'ン', vsRomaji: 'n', title: 'สับสนมาก', desc: '<span class="text-dot">●</span> 1 จุด (อยู่สูง)<br><span class="text-stroke">╲</span> เส้นหลัก <strong>ลงซ้าย</strong><br><br>⚠️ ระวังสลับกับ ン' },
-    'ン': { vs: 'ソ', vsRomaji: 'so', title: 'สับสนมาก', desc: '<span class="text-dot">●</span> 1 จุด (อยู่ต่ำ)<br><span class="text-stroke">╱</span> เส้นหลัก <strong>ลงขวา</strong><br><br>⚠️ ระวังสลับกับ ソ' },
+    'シ': { vs: 'ツ', vsRomaji: 'tsu', title: 'คนสับสนเยอะที่สุด', desc: '<span class="text-dot">● ●</span> จุดเรียง <strong>"แนวนอน"</strong><br><span class="text-stroke">──</span> ลากเส้นจากซ้าย ➔ ขวา<br><br>ระวังสลับกับ ツ' },
+    'ツ': { vs: 'シ', vsRomaji: 'shi', title: 'คนสับสนเยอะที่สุด', desc: '<span class="text-dot">●<br>●</span> จุดเรียง <strong>"แนวตั้ง"</strong><br><span class="text-stroke">│</span> ลากเส้นจากบน ➔ ล่าง<br><br>ระวังสลับกับ シ' },
+    'ソ': { vs: 'ン', vsRomaji: 'n', title: 'สับสนมาก', desc: '<span class="text-dot">●</span> 1 จุด (อยู่สูง)<br><span class="text-stroke">╲</span> เส้นหลัก <strong>ลงซ้าย</strong><br><br>ระวังสลับกับ ン' },
+    'ン': { vs: 'ソ', vsRomaji: 'so', title: 'สับสนมาก', desc: '<span class="text-dot">●</span> 1 จุด (อยู่ต่ำ)<br><span class="text-stroke">╱</span> เส้นหลัก <strong>ลงขวา</strong><br><br>ระวังสลับกับ ソ' },
     'ク': { vs: 'ケ', vsRomaji: 'ke', title: 'ข้อควรระวัง', desc: '<strong>คุ</strong> ไม่มีเส้นขวาง<br><strong>เคะ</strong> มีเส้น <strong>+</strong> เพิ่มมา' },
     'ケ': { vs: 'ク', vsRomaji: 'ku', title: 'ข้อควรระวัง', desc: '<strong>เคะ</strong> มีเส้น <strong>+</strong> เพิ่มมา<br><strong>คุ</strong> ไม่มีเส้นขวาง' },
     'コ': { vs: 'ユ', vsRomaji: 'yu', title: 'บางคนมองคล้ายกัน', desc: '<strong>โคะ</strong> เป็นกรอบมุมฉาก (┐ ┘)<br><strong>ยุ</strong> มีหางลากยาวลงมาตรงกลาง' },
@@ -87,6 +87,18 @@ const cautionData = {
 };
 
 let quizStartTime = 0; // ตัวแปรสำหรับเริ่มจับเวลาทำแบบทดสอบ
+
+// ================= Preload รูปทั้งหมดล่วงหน้า (แก้บัคเปลี่ยนรูปช้า) =================
+const imageCache = {};
+function preloadAllImages() {
+    katakanaData.forEach(item => {
+        if (!item.img || imageCache[item.img]) return;
+        const img = new Image();
+        img.decoding = 'async';
+        img.src = item.img;
+        imageCache[item.img] = img;
+    });
+}
 
 // ฐานข้อมูลผู้ใช้จำลอง (State Management & Storage)
 let userData = {
@@ -198,28 +210,62 @@ function playSound(text) {
 
 // ================= ระบบเรียน (Learn) =================
 let currentLearnIdx = 0;
-function updateLearnCard() {
-    const card = document.getElementById('learn-card-anim');
-    if(card) {
-        card.style.animation = 'none';
-        card.offsetHeight;
-        card.style.animation = 'fadeSlideIn 0.3s ease forwards';
+let learnImgToken = 0;
+
+function setCardImage(imgEl, skeletonEl, src) {
+    const token = ++learnImgToken;
+    imgEl.classList.remove('loaded');
+    if (skeletonEl) skeletonEl.classList.remove('hidden');
+
+    if (!src) {
+        if (skeletonEl) skeletonEl.classList.add('hidden');
+        imgEl.removeAttribute('src');
+        return;
     }
 
+    const cached = imageCache[src];
+    const reveal = () => {
+        if (token !== learnImgToken) return; // ผู้ใช้เปลี่ยนหน้าไปแล้ว ไม่ต้องแสดงรูปเก่า
+        imgEl.src = src;
+        requestAnimationFrame(() => {
+            if (token !== learnImgToken) return;
+            imgEl.classList.add('loaded');
+            if (skeletonEl) skeletonEl.classList.add('hidden');
+        });
+    };
+
+    if (cached && cached.complete) {
+        reveal();
+    } else {
+        const loader = cached || new Image();
+        loader.decoding = 'async';
+        loader.onload = reveal;
+        loader.onerror = reveal;
+        loader.src = src;
+        imageCache[src] = loader;
+    }
+}
+
+function updateLearnCard() {
     let data = katakanaData[currentLearnIdx];
     document.getElementById('learn-kana').innerText = data.kana;
     document.getElementById('learn-romaji').innerText = `[${data.romaji}]`;
     document.getElementById('learn-visual').innerText = data.visual;
-    
-    const mnemonicBox = document.querySelector('.mnemonic-box');
-    if(mnemonicBox) {
-        mnemonicBox.innerHTML = `
-            <p class="mnemonic-title"><span class="mnemonic-icon">💡</span>วิธีจำ</p>
-            <p id="learn-mnemonic">${data.mnemonic}</p>
-        `;
-    }
+    document.getElementById('learn-mnemonic').innerText = data.mnemonic;
 
-    document.getElementById('learn-img').src = data.img || '';
+    setCardImage(document.getElementById('learn-img'), document.getElementById('learn-img-skeleton'), data.img);
+
+    // เตรียมรูปตัวถัดไป/ก่อนหน้าไว้ล่วงหน้า เพื่อให้สลับรูปได้ทันทีไม่มีดีเลย์
+    [currentLearnIdx - 1, currentLearnIdx + 1].forEach(i => {
+        const neighbor = katakanaData[i];
+        if (neighbor && neighbor.img && !imageCache[neighbor.img]) {
+            const pre = new Image();
+            pre.decoding = 'async';
+            pre.src = neighbor.img;
+            imageCache[neighbor.img] = pre;
+        }
+    });
+
     document.getElementById('learn-progress-text').innerText = `${currentLearnIdx + 1} / ${katakanaData.length}`;
     document.getElementById('learn-progress-fill').style.width = `${((currentLearnIdx + 1) / katakanaData.length) * 100}%`;
     
@@ -243,7 +289,7 @@ function updateLearnCard() {
                     </div>
                     <div class="caution-desc">${cData.desc}</div>
                 </div>
-                <p style="font-size: 16px; color: #bdc3c7; margin-top: 15px; margin-bottom: 0; text-align: center;">
+                <p class="caution-color-note">
                     <span class="text-dot">สีแดง = จุด</span> | <span class="text-stroke">สีน้ำเงิน = เส้นหลัก</span>
                 </p>
             `;
@@ -259,7 +305,7 @@ function nextLearn() {
         currentLearnIdx++;
         updateLearnCard();
     } else {
-        alert("🎉 ยินดีด้วย! เรียนจบหมดแล้ว ไปทำแบบทดสอบกันเถอะ!");
+        alert("ยินดีด้วย! เรียนจบหมดแล้ว ไปทำแบบทดสอบกันเถอะ");
         showPage('page-home');
     }
 }
@@ -305,7 +351,7 @@ function loadQuizQuestion() {
     
     let choicesHTML = '';
     options.forEach(opt => {
-        choicesHTML += `<button class="choice-btn" onclick="checkAnswer('${opt.id}', '${qData.id}', this)">○ ${opt.romaji}</button>`;
+        choicesHTML += `<button class="choice-btn" onclick="checkAnswer('${opt.id}', '${qData.id}', this)">${opt.romaji}</button>`;
     });
     document.getElementById('quiz-choices').innerHTML = choicesHTML;
     
@@ -324,12 +370,12 @@ function checkAnswer(selectedId, correctId, btnElement) {
     if (selectedId === correctId) {
         btnElement.classList.add('correct');
         feedbackBox.classList.add('correct');
-        feedbackBox.innerHTML = `✅ ถูกต้อง!<br>${qData.kana} = ${qData.romaji}`;
+        feedbackBox.innerHTML = `<svg class="icon"><use href="#icon-check"/></svg> ถูกต้อง — ${qData.kana} = ${qData.romaji}`;
         quizScore++;
     } else {
         btnElement.classList.add('wrong');
         feedbackBox.classList.add('wrong');
-        feedbackBox.innerHTML = `❌ ไม่ถูก<br>คำตอบคือ ${qData.kana} = ${qData.romaji}`;
+        feedbackBox.innerHTML = `<svg class="icon"><use href="#icon-x"/></svg> ไม่ถูก — คำตอบคือ ${qData.kana} = ${qData.romaji}`;
         if(!userData.wrongHistory.includes(qData.id)) userData.wrongHistory.push(qData.id);
     }
 }
@@ -357,19 +403,23 @@ function showQuizResult() {
     userData.totalCorrect += quizScore;
     saveUserStats();
 
-    let stars = "";
-    if (percent === 100) stars = "⭐⭐⭐⭐⭐";
-    else if (percent >= 80) stars = "⭐⭐⭐⭐☆";
-    else if (percent >= 60) stars = "⭐⭐⭐☆☆";
-    else if (percent >= 40) stars = "⭐⭐☆☆☆";
-    else if (percent >= 20) stars = "⭐☆☆☆☆";
-    else stars = "☆☆☆☆☆";
+    let filledStars = 0;
+    if (percent === 100) filledStars = 5;
+    else if (percent >= 80) filledStars = 4;
+    else if (percent >= 60) filledStars = 3;
+    else if (percent >= 40) filledStars = 2;
+    else if (percent >= 20) filledStars = 1;
+
+    let starsHTML = '';
+    for (let i = 0; i < 5; i++) {
+        starsHTML += `<svg class="icon${i < filledStars ? '' : ' empty'}"><use href="#icon-star-fill"/></svg>`;
+    }
 
     document.getElementById('result-score').innerText = `${quizScore} / ${quizQuestions.length}`;
     document.getElementById('result-percent').innerText = `${percent}%`;
-    document.getElementById('result-stars').innerText = stars;
+    document.getElementById('result-stars').innerHTML = starsHTML;
     document.getElementById('result-time').innerText = timeString;
-    
+
     let wrongHTML = '';
     if (userData.wrongHistory.length > 0) {
         wrongHTML = '<p><strong>คุณตอบผิด:</strong></p>';
@@ -379,7 +429,7 @@ function showQuizResult() {
         });
         document.getElementById('btn-review-wrong').classList.remove('hidden');
     } else {
-        wrongHTML = '<p>เก่งมาก! คุณตอบถูกหมดเลย 🎉</p>';
+        wrongHTML = '<p>เก่งมาก! คุณตอบถูกหมดเลย</p>';
         document.getElementById('btn-review-wrong').classList.add('hidden');
     }
     document.getElementById('wrong-answers-list').innerHTML = wrongHTML;
@@ -447,12 +497,13 @@ function markReview(isRemembered) {
     if (currentReviewIdx < reviewQueue.length) {
         loadReviewCard();
     } else {
-        alert("ทบทวนครบแล้ว! เก่งมากครับ");
+        alert("ทบทวนครบแล้ว เก่งมากครับ");
         showPage('page-home');
     }
 }
 
 // เริ่มต้นรันระบบเมื่อเปิดเว็บ
+preloadAllImages();
 checkStreak();
 updateLearnCard();
 updateHomeState();

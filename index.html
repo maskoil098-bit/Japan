@@ -4,184 +4,226 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Katakana Memory</title>
-    <!-- นำเข้า Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Sans+Thai:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+Thai:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- รูปพื้นหลังเบลอๆ -->
-    <div class="bg-overlay"></div>
+
+    <!-- ================= SVG Icon Sprite ================= -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+        <defs>
+            <symbol id="icon-flower" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2.2"/><path d="M12 9.8c-1.5-2.2-1.5-4.6 0-6 1.5 1.4 1.5 3.8 0 6z"/><path d="M14.2 12c2.2-1.5 4.6-1.5 6 0-1.4 1.5-3.8 1.5-6 0z"/><path d="M12 14.2c1.5 2.2 1.5 4.6 0 6-1.5-1.4-1.5-3.8 0-6z"/><path d="M9.8 12c-2.2 1.5-4.6 1.5-6 0 1.4-1.5 3.8-1.5 6 0z"/></g></symbol>
+            <symbol id="icon-play" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M6 4.5l13 7.5-13 7.5V4.5z"/></symbol>
+            <symbol id="icon-edit" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 4.5l4 4L8 20H4v-4L15.5 4.5z"/><path d="M13.5 6.5l4 4"/></g></symbol>
+            <symbol id="icon-star" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" d="M12 3.5l2.6 5.5 6 .7-4.4 4.2 1.1 6-5.3-2.9-5.3 2.9 1.1-6-4.4-4.2 6-.7L12 3.5z"/></symbol>
+            <symbol id="icon-star-fill" viewBox="0 0 24 24"><path fill="currentColor" d="M12 3.5l2.6 5.5 6 .7-4.4 4.2 1.1 6-5.3-2.9-5.3 2.9 1.1-6-4.4-4.2 6-.7L12 3.5z"/></symbol>
+            <symbol id="icon-alert" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l9 16H3L12 4z"/><path d="M12 10v4"/><circle cx="12" cy="17" r="0.6" fill="currentColor" stroke="none"/></g></symbol>
+            <symbol id="icon-info" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5"/><circle cx="12" cy="7.8" r="0.6" fill="currentColor" stroke="none"/></g></symbol>
+            <symbol id="icon-home" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5L12 4l8 7.5"/><path d="M6 10v9.5h12V10"/><path d="M10 19.5v-6h4v6"/></g></symbol>
+            <symbol id="icon-volume" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5v5h4l5 4v-13l-5 4H4z"/><path d="M16.5 9a4.5 4.5 0 0 1 0 6"/><path d="M19 7a8 8 0 0 1 0 10"/></g></symbol>
+            <symbol id="icon-bulb" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17h6"/><path d="M9.5 20h5"/><path d="M12 3.5A5.5 5.5 0 0 0 8.6 13c.8.7 1.2 1.5 1.3 2.5h4.2c.1-1 .5-1.8 1.3-2.5A5.5 5.5 0 0 0 12 3.5z"/></g></symbol>
+            <symbol id="icon-chevron-left" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M15 5l-7 7 7 7"/></symbol>
+            <symbol id="icon-chevron-right" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></symbol>
+            <symbol id="icon-check" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.5l5 5 10-11"/></symbol>
+            <symbol id="icon-x" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/></symbol>
+            <symbol id="icon-award" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="5.5"/><path d="M9 13.8L7.5 20l4.5-2.5 4.5 2.5-1.5-6.2"/></g></symbol>
+            <symbol id="icon-clock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.5 2"/></g></symbol>
+            <symbol id="icon-zap" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M13 3L5 13.5h5.5L11 21l8-10.5h-5.5L13 3z"/></symbol>
+            <symbol id="icon-target" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/></g></symbol>
+            <symbol id="icon-book" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5c2-1 5-1 8 0v13c-3-1-6-1-8 0v-13z"/><path d="M20 5.5c-2-1-5-1-8 0v13c3-1 6-1 8 0v-13z"/></g></symbol>
+            <symbol id="icon-heart" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" d="M12 20s-7.5-4.7-9.6-9.4C1.2 7.1 3 4 6.4 4 8.6 4 10.6 5.2 12 7c1.4-1.8 3.4-3 5.6-3 3.4 0 5.2 3.1 4 6.6C19.5 15.3 12 20 12 20z"/></symbol>
+            <symbol id="icon-refresh" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4v5h5"/><path d="M20 20v-5h-5"/><path d="M5 14a7.5 7.5 0 0 0 12.5 3.3L20 15"/><path d="M19 10A7.5 7.5 0 0 0 6.5 6.7L4 9"/></g></symbol>
+            <symbol id="icon-help" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M9.5 9.3a2.5 2.5 0 1 1 3.7 2.2c-.8.5-1.2 1-1.2 1.9"/><circle cx="12" cy="16.8" r="0.6" fill="currentColor" stroke="none"/></g></symbol>
+        </defs>
+    </svg>
+
+    <div class="bg-texture"></div>
 
     <div class="app-container">
-        
+
         <!-- ================= หน้า Home ================= -->
-        <div id="page-home" class="page active glass-card text-center">
-            <h1>
-                <span style="display: block; font-size: 55px; margin-bottom: 10px;">🌸</span>
-                Katakana Memory
-            </h1>
+        <div id="page-home" class="page active card text-center">
+            <div class="brand">
+                <svg class="icon icon-brand" aria-hidden="true"><use href="#icon-flower"/></svg>
+                <h1>Katakana Memory</h1>
+            </div>
             <p class="subtitle">เรียนคาตาคานะด้วยภาพจำ</p>
-            
+
             <div class="progress-section">
-                <p>Progress <span id="home-progress-text">0 / 46</span></p>
+                <div class="progress-label">
+                    <span>ความคืบหน้า</span>
+                    <span id="home-progress-text">0 / 46</span>
+                </div>
                 <div class="progress-bar-bg"><div class="progress-bar-fill" id="home-progress-fill"></div></div>
-                
-                <!-- ⚡ เปลี่ยนเป็น Streak และ 🎯 ความแม่นยำ -->
-                <div class="stats-box" style="display: flex; justify-content: center; gap: 10px; margin-top: 10px;">
-                    <span class="text-small" style="background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 15px;">
-                        ⚡ Streak: <span id="home-streak" class="text-warning">1</span> วัน
+
+                <div class="stats-row">
+                    <span class="stat-pill">
+                        <svg class="icon icon-sm"><use href="#icon-zap"/></svg>
+                        Streak <strong id="home-streak">1</strong> วัน
                     </span>
-                    <span class="text-small" style="background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 15px;">
-                        🎯 ความแม่นยำ: <span id="home-accuracy" class="text-success">0%</span>
+                    <span class="stat-pill">
+                        <svg class="icon icon-sm"><use href="#icon-target"/></svg>
+                        ความแม่นยำ <strong id="home-accuracy">0%</strong>
                     </span>
                 </div>
             </div>
 
             <div class="button-group mt-20">
-                <button class="btn-primary" onclick="startLearn()">🚀 เริ่มเรียน</button>
-                <button class="btn-quiz" onclick="setupQuiz()">📝 แบบทดสอบ</button>
-                <button class="btn-review" onclick="startReview('all')">⭐ ทบทวน</button>
-                <button class="btn-warning mt-10 w-100" style="background: linear-gradient(135deg, #e74c3c, #c0392b); color: white;" onclick="showPage('page-caution')">⚠️ ข้อควรระวัง & จุดสับสน</button>
+                <button class="btn btn-primary" onclick="startLearn()">
+                    <svg class="icon"><use href="#icon-play"/></svg> เริ่มเรียน
+                </button>
+                <button class="btn btn-outline" onclick="setupQuiz()">
+                    <svg class="icon"><use href="#icon-edit"/></svg> แบบทดสอบ
+                </button>
+                <button class="btn btn-outline" onclick="startReview('all')">
+                    <svg class="icon"><use href="#icon-star"/></svg> ทบทวน
+                </button>
+                <button class="btn btn-danger-outline mt-10 w-100" onclick="showPage('page-caution')">
+                    <svg class="icon"><use href="#icon-alert"/></svg> ข้อควรระวัง &amp; จุดสับสน
+                </button>
             </div>
         </div>
-    <div class="info-panel glass-card">
-            <h3>📌 แนะนำการใช้งาน</h3>
+
+        <div class="info-panel card">
+            <h3><svg class="icon"><use href="#icon-info"/></svg> แนะนำการใช้งาน</h3>
             <ul>
-                <li><strong>🚀 เริ่มเรียน:</strong> เรียนรู้คาตาคานะใหม่ทีละตัว พร้อมภาพช่วยจำและวิธีจำเพื่อสร้างการเชื่อมโยงในสมอง</li>
-                <li><strong>📝 แบบทดสอบ:</strong> สุ่มคำถามประเมินความจำ พร้อมระบบคำนวณดาว <strong>⭐</strong>, เวลาที่ใช้ <strong>⏳</strong>, และเก็บบันทึกความแม่นยำ <strong>🎯</strong></li>
-                <li><strong>⭐ ทบทวน:</strong> ระบบ Flashcard สำหรับทบทวนเน้นเฉพาะตัวที่เพิ่งตอบผิด</li>
-                <li><strong>⚡ สถิติผู้ใช้:</strong> ติดตามความต่อเนื่องในการเรียนด้วย Streak และเปอร์เซ็นต์ความแม่นยำเฉลี่ย</li>
+                <li><strong>เริ่มเรียน</strong> — เรียนรู้คาตาคานะใหม่ทีละตัว พร้อมภาพช่วยจำและวิธีจำเพื่อสร้างการเชื่อมโยงในสมอง</li>
+                <li><strong>แบบทดสอบ</strong> — สุ่มคำถามประเมินความจำ พร้อมระบบคำนวณดาว เวลาที่ใช้ และเก็บบันทึกความแม่นยำ</li>
+                <li><strong>ทบทวน</strong> — ระบบ Flashcard สำหรับทบทวนเน้นเฉพาะตัวที่เพิ่งตอบผิด</li>
+                <li><strong>สถิติผู้ใช้</strong> — ติดตามความต่อเนื่องในการเรียนด้วย Streak และเปอร์เซ็นต์ความแม่นยำเฉลี่ย</li>
             </ul>
             <hr class="divider">
             <p class="text-small"><strong>จุดประสงค์:</strong> สื่อชิ้นนี้สร้างขึ้นเพื่อแก้ปัญหาการลืมตัวอักษร โดยประยุกต์ใช้เทคนิค Mnemonic (ภาพช่วยจำ) ร่วมกับ Spaced Repetition (การทบทวนซ้ำ)</p>
         </div>
+
         <!-- ================= กล่องข้อควรระวัง (มุมขวาเฉพาะหน้า Learn) ================= -->
-        <div id="caution-panel" class="caution-panel glass-card hidden">
-             <h3 class="text-warning mb-10" style="margin-top:0; text-align: center; color: #ee5f5f;">
-                <span style="display: inline-block; position: relative;">
-                    <span style="position: absolute; left: -32px; top: -3px; font-size: 22px;">⚠️</span>
-                    ข้อควรระวัง
-                </span>
+        <div id="caution-panel" class="caution-panel card hidden">
+            <h3 class="caution-heading">
+                <svg class="icon"><use href="#icon-alert"/></svg> ข้อควรระวัง
             </h3>
-            <div id="caution-content">
-                <!-- เนื้อหาจะถูกสร้างและเปลี่ยนอัตโนมัติด้วย JavaScript -->
-            </div>
+            <div id="caution-content"></div>
         </div>
 
         <!-- ================= หน้า เรียน (Learn) ================= -->
-        <div id="page-learn" class="page glass-card">
-            <button class="btn-icon top-left" onclick="showPage('page-home')">🏠</button>
-            
+        <div id="page-learn" class="page card">
+            <button class="btn-icon top-left" onclick="showPage('page-home')">
+                <svg class="icon"><use href="#icon-home"/></svg>
+            </button>
+
             <div class="progress-section text-center mb-20">
-                <p>เรียนแล้ว <span id="learn-progress-text">1 / 46</span></p>
+                <div class="progress-label center"><span>เรียนแล้ว</span><span id="learn-progress-text">1 / 46</span></div>
                 <div class="progress-bar-bg"><div class="progress-bar-fill" id="learn-progress-fill"></div></div>
             </div>
 
             <div class="card-content text-center" id="learn-card-anim">
                 <div class="kana-large" id="learn-kana">ア</div>
-                
-                <!-- เปลี่ยนเป็นแท็ก img สำหรับใส่รูปจริง -->
+
                 <div class="image-container">
-                    <img id="learn-img" src="" alt="รูปภาพช่วยจำ" class="visual-img">
+                    <div class="img-skeleton" id="learn-img-skeleton"></div>
+                    <img id="learn-img" src="" alt="รูปภาพช่วยจำ" class="visual-img" decoding="async">
                 </div>
                 <div class="visual-text" id="learn-visual">คนกางแขน</div>
-                
+
                 <div class="sound-box my-15">
                     <span class="romaji-text" id="learn-romaji">[a]</span>
-                    <button class="btn-sound ml-10" onclick="playSound(document.getElementById('learn-kana').innerText)">🔊</button>
+                    <button class="btn-sound ml-10" onclick="playSound(document.getElementById('learn-kana').innerText)">
+                        <svg class="icon"><use href="#icon-volume"/></svg>
+                    </button>
                 </div>
 
                 <hr class="divider">
-                
+
                 <div class="mnemonic-box text-center">
-                    <p class="mnemonic-title"><span class="mnemonic-icon">💡</span><strong>วิธีจำ</strong></p>
+                    <p class="mnemonic-title"><svg class="icon icon-sm"><use href="#icon-bulb"/></svg><strong>วิธีจำ</strong></p>
                     <p id="learn-mnemonic">ア เหมือนคนกางแขนร้อง "อาาา"</p>
                 </div>
             </div>
 
             <div class="nav-buttons mt-20">
-                <button class="btn-secondary" onclick="prevLearn()">◀ ก่อนหน้า</button>
-                <button class="btn-primary" onclick="nextLearn()">ถัดไป ▶</button>
+                <button class="btn btn-outline" onclick="prevLearn()"><svg class="icon"><use href="#icon-chevron-left"/></svg> ก่อนหน้า</button>
+                <button class="btn btn-primary" onclick="nextLearn()">ถัดไป <svg class="icon"><use href="#icon-chevron-right"/></svg></button>
             </div>
         </div>
 
         <!-- ================= หน้า ตั้งค่า Quiz ================= -->
-        <div id="page-quiz-setup" class="page glass-card">
-            <button class="btn-icon top-left" onclick="showPage('page-home')">←</button>
-            <h2 class="text-center">📝 แบบทดสอบ</h2>
+        <div id="page-quiz-setup" class="page card">
+            <button class="btn-icon top-left" onclick="showPage('page-home')">
+                <svg class="icon"><use href="#icon-chevron-left"/></svg>
+            </button>
+            <h2 class="text-center"><svg class="icon"><use href="#icon-edit"/></svg> แบบทดสอบ</h2>
             <div class="quiz-options mt-20">
                 <p>เลือกจำนวนข้อ:</p>
-                <select id="quiz-count" class="glass-input">
+                <select id="quiz-count" class="input-field">
                     <option value="10">10 ข้อ</option>
                     <option value="20">20 ข้อ</option>
                     <option value="46">46 ข้อ</option>
                 </select>
-                <button class="btn-quiz mt-20 w-100" onclick="startQuiz()">🚀 เริ่มทดสอบ</button>
+                <button class="btn btn-primary mt-20 w-100" onclick="startQuiz()">
+                    <svg class="icon"><use href="#icon-play"/></svg> เริ่มทดสอบ
+                </button>
             </div>
         </div>
 
         <!-- ================= หน้า ทำ Quiz ================= -->
-        <div id="page-quiz-active" class="page glass-card text-center">
+        <div id="page-quiz-active" class="page card text-center">
             <div class="progress-section mb-20">
-                <p>ข้อที่ <span id="quiz-current-q">1</span> / <span id="quiz-total-q">10</span></p>
+                <p class="quiz-count-label">ข้อที่ <span id="quiz-current-q">1</span> / <span id="quiz-total-q">10</span></p>
             </div>
 
             <div class="quiz-question my-20">
                 <div class="kana-large" id="quiz-display">ア</div>
             </div>
 
-            <div class="quiz-choices" id="quiz-choices">
-                <!-- ปุ่มช้อยส์จะถูกสร้างด้วย JS -->
-            </div>
-            
+            <div class="quiz-choices" id="quiz-choices"></div>
+
             <div id="quiz-feedback" class="feedback-box hidden mt-15"></div>
-            <button id="btn-next-quiz" class="btn-primary mt-15 hidden w-100" onclick="nextQuizQuestion()">ข้อถัดไป ▶</button>
+            <button id="btn-next-quiz" class="btn btn-primary mt-15 hidden w-100" onclick="nextQuizQuestion()">
+                ข้อถัดไป <svg class="icon"><use href="#icon-chevron-right"/></svg>
+            </button>
         </div>
 
         <!-- ================= หน้าสรุปผล Quiz ================= -->
-        <div id="page-quiz-result" class="page glass-card text-center">
-            <h2>🎉 สรุปผลคะแนน</h2>
-            
+        <div id="page-quiz-result" class="page card text-center">
+            <h2><svg class="icon"><use href="#icon-award"/></svg> สรุปผลคะแนน</h2>
+
             <div class="score-display my-20">
-                <!-- คะแนนรวม -->
                 <h1 id="result-score">18 / 20</h1>
-                
-                <!-- ⭐ จุดแสดงดาว -->
-                <div id="result-stars" style="font-size: 26px; color: #f1c40f; margin: 5px 0;">⭐⭐⭐⭐☆</div>
-                
-                <!-- เปอร์เซ็นต์ -->
+                <div id="result-stars" class="stars-row"></div>
                 <p id="result-percent">90%</p>
-                
-                <!-- ⏳ จุดแสดงเวลาที่ใช้ -->
-                <div style="background: rgba(0,0,0,0.2); border-radius: 12px; padding: 8px 15px; margin: 15px auto; display: inline-block;">
-                    <span style="font-size: 14px; color: #bdc3c7;">⏳ ใช้เวลา: </span>
-                    <span id="result-time" style="font-size: 16px; font-weight: bold; color: #ffffff;">0 วินาที</span>
+
+                <div class="time-pill">
+                    <svg class="icon icon-sm"><use href="#icon-clock"/></svg>
+                    <span>ใช้เวลา: </span>
+                    <span id="result-time">0 วินาที</span>
                 </div>
             </div>
-            
-            <div id="wrong-answers-list" class="wrong-list mb-20 text-left">
-                <!-- รายการที่ตอบผิดจะแสดงตรงนี้ -->
-            </div>
 
-            <button class="btn-review w-100" id="btn-review-wrong" onclick="startReview('wrong')">📖 ทบทวนตัวที่ผิด</button>
-            <button class="btn-secondary w-100 mt-10" onclick="showPage('page-home')">🏠 กลับหน้าหลัก</button>
+            <div id="wrong-answers-list" class="wrong-list mb-20 text-left"></div>
+
+            <button class="btn btn-outline w-100" id="btn-review-wrong" onclick="startReview('wrong')">
+                <svg class="icon"><use href="#icon-book"/></svg> ทบทวนตัวที่ผิด
+            </button>
+            <button class="btn btn-secondary w-100 mt-10" onclick="showPage('page-home')">
+                <svg class="icon"><use href="#icon-home"/></svg> กลับหน้าหลัก
+            </button>
         </div>
-        
+
         <!-- ================= หน้า ทบทวน (Review Flashcard) ================= -->
-        <div id="page-review" class="page glass-card text-center">
-            <button class="btn-icon top-left" onclick="showPage('page-home')">🏠</button>
+        <div id="page-review" class="page card text-center">
+            <button class="btn-icon top-left" onclick="showPage('page-home')">
+                <svg class="icon"><use href="#icon-home"/></svg>
+            </button>
             <p class="mb-10">โหมด: <span id="review-mode-text">ทั้งหมด</span> (<span id="review-remain">0</span> ตัว)</p>
-            
-            <!-- Flashcard -->
+
             <div class="flashcard-container mb-20" onclick="flipReviewCard()">
                 <div class="flashcard" id="flashcard-inner">
                     <div class="card-front">
                         <div class="kana-giant" id="review-front-kana">ア</div>
-                        <p class="click-hint">คลิกเพื่อพลิก ↺</p>
+                        <p class="click-hint"><svg class="icon icon-sm"><use href="#icon-refresh"/></svg> คลิกเพื่อพลิก</p>
                     </div>
                     <div class="card-back">
                         <h2 id="review-back-romaji">a</h2>
-                        <img id="review-back-img" src="" class="visual-img-small">
+                        <img id="review-back-img" src="" class="visual-img-small" decoding="async">
                         <p id="review-back-visual">คนกางแขน</p>
                         <hr class="divider">
                         <p id="review-back-mnemonic">อ๊ะ! กางแขนร้อง อาาา</p>
@@ -190,31 +232,36 @@
             </div>
 
             <div class="review-actions hidden" id="review-actions">
-                <button class="btn-danger" onclick="markReview(false)">🤔 ลืม/จำยาก</button>
-                <button class="btn-success" onclick="markReview(true)">❤ จำได้แล้ว</button>
+                <button class="btn btn-danger-outline" onclick="markReview(false)">
+                    <svg class="icon"><use href="#icon-help"/></svg> ลืม/จำยาก
+                </button>
+                <button class="btn btn-primary" onclick="markReview(true)">
+                    <svg class="icon"><use href="#icon-heart"/></svg> จำได้แล้ว
+                </button>
             </div>
         </div>
+
         <!-- ================= หน้า ข้อควรระวัง (Caution) ================= -->
-        <div id="page-caution" class="page glass-card text-center">
-            <button class="btn-icon top-left" onclick="showPage('page-home')">🏠</button>
-            <h2 class="mb-10">💡 ข้อควรระวัง</h2>
-            
+        <div id="page-caution" class="page card text-center">
+            <button class="btn-icon top-left" onclick="showPage('page-home')">
+                <svg class="icon"><use href="#icon-home"/></svg>
+            </button>
+            <h2 class="mb-10"><svg class="icon"><use href="#icon-bulb"/></svg> ข้อควรระวัง</h2>
+
             <div class="scrollable-content text-left">
-                <!-- คำแนะนำทั่วไป -->
                 <div class="compare-section">
-                    <h3 class="text-warning mb-10">✏️ เวลาคัดเขียน</h3>
-                    <ul class="text-small" style="line-height: 1.8;">
+                    <h3 class="section-heading mb-10"><svg class="icon icon-sm"><use href="#icon-edit"/></svg> เวลาคัดเขียน</h3>
+                    <ul class="text-small">
                         <li>อย่าเขียนเส้นยาวเกินไป</li>
                         <li>ตำแหน่งของ <strong>"จุด"</strong> ต้องอยู่ด้านบนเสมอ</li>
                         <li>ระวังสลับกับตัวอักษรที่มีหน้าตาคล้ายกัน</li>
                     </ul>
                 </div>
 
-                <!-- 4 ตัวปราบเซียน -->
                 <div class="compare-section mt-15">
-                    <h3 class="text-warning mb-10">⭐ 4 ตัวปราบเซียน (สับสนมากที่สุด)</h3>
+                    <h3 class="section-heading mb-10"><svg class="icon icon-sm"><use href="#icon-star"/></svg> 4 ตัวปราบเซียน (สับสนมากที่สุด)</h3>
                     <p class="text-small text-center mb-10">จำง่ายๆ: <span class="text-dot">สีแดง = จุด</span> | <span class="text-stroke">สีน้ำเงิน = เส้นหลัก</span></p>
-                    
+
                     <div class="compare-grid">
                         <div class="compare-card text-center">
                             <div class="kana-compare">シ</div>
@@ -243,10 +290,9 @@
                     </div>
                 </div>
 
-                <!-- คู่สับสนอื่นๆ -->
                 <div class="compare-section mt-15">
-                    <h3 class="text-warning mb-10">🥊 คู่สับสนอื่นๆ</h3>
-                    
+                    <h3 class="section-heading mb-10"><svg class="icon icon-sm"><use href="#icon-alert"/></svg> คู่สับสนอื่นๆ</h3>
+
                     <div class="mini-compare mb-10">
                         <div class="kana-box">ク <span class="text-small">(ku)</span></div>
                         <div class="vs-text">VS</div>
