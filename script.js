@@ -485,14 +485,9 @@ function flipReviewCard() {
 
 function markReview(isRemembered) {
     let data = reviewQueue[currentReviewIdx];
-    
-    if (!isRemembered) {
-        if(!userData.hardItems.includes(data.id)) userData.hardItems.push(data.id);
-    } else {
-        userData.hardItems = userData.hardItems.filter(id => id !== data.id);
-    }
+    userData.hardItems = userData.hardItems.filter(id => id !== data.id);
     saveUserStats();
-    
+
     currentReviewIdx++;
     if (currentReviewIdx < reviewQueue.length) {
         loadReviewCard();
@@ -502,7 +497,25 @@ function markReview(isRemembered) {
     }
 }
 
+// ================= ลูกเล่นกลีบซากุระลอยตกแต่งพื้นหลัง =================
+function spawnPetals() {
+    const layer = document.getElementById('petal-layer');
+    if (!layer) return;
+    const count = window.innerWidth < 700 ? 9 : 16;
+    for (let i = 0; i < count; i++) {
+        const petal = document.createElement('span');
+        petal.className = 'petal';
+        petal.style.left = `${Math.random() * 100}vw`;
+        petal.style.animationDuration = `${10 + Math.random() * 10}s`;
+        petal.style.animationDelay = `${Math.random() * 12}s`;
+        petal.style.setProperty('--drift', `${(Math.random() * 120 - 60).toFixed(0)}px`);
+        petal.style.setProperty('--size', `${8 + Math.random() * 8}px`);
+        layer.appendChild(petal);
+    }
+}
+
 // เริ่มต้นรันระบบเมื่อเปิดเว็บ
+spawnPetals();
 preloadAllImages();
 checkStreak();
 updateLearnCard();

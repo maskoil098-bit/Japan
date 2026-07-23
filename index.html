@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Katakana Memory</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+Thai:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=Yuji+Syuku&family=Noto+Sans+Thai:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+    <div class="petal-layer" id="petal-layer" aria-hidden="true"></div>
 
     <!-- ================= SVG Icon Sprite ================= -->
     <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -37,15 +39,17 @@
         </defs>
     </svg>
 
-    <div class="bg-texture"></div>
+    <div class="bg-photo"></div>
+    <div class="bg-scrim"></div>
 
     <div class="app-container">
 
         <!-- ================= หน้า Home ================= -->
         <div id="page-home" class="page active card text-center">
             <div class="brand">
-                <svg class="icon icon-brand" aria-hidden="true"><use href="#icon-flower"/></svg>
+                <span class="brand-seal"><svg class="icon icon-brand" aria-hidden="true"><use href="#icon-flower"/></svg></span>
                 <h1>Katakana Memory</h1>
+                <span class="brand-kanji">片仮名</span>
             </div>
             <p class="subtitle">เรียนคาตาคานะด้วยภาพจำ</p>
 
@@ -232,11 +236,8 @@
             </div>
 
             <div class="review-actions hidden" id="review-actions">
-                <button class="btn btn-danger-outline" onclick="markReview(false)">
-                    <svg class="icon"><use href="#icon-help"/></svg> ลืม/จำยาก
-                </button>
-                <button class="btn btn-primary" onclick="markReview(true)">
-                    <svg class="icon"><use href="#icon-heart"/></svg> จำได้แล้ว
+                <button class="btn btn-primary w-100" onclick="markReview(true)">
+                    <svg class="icon"><use href="#icon-heart"/></svg> จำได้แล้ว ถัดไป
                 </button>
             </div>
         </div>
