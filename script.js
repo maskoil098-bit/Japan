@@ -19,7 +19,7 @@ const katakanaData = [
     { id: 'k12', kana: 'シ', romaji: 'shi', visual: 'มองบน', mnemonic: 'ชิ! คนหน้าบึ้งมองขึ้นบน', img: 'images/K12.png' },
     { id: 'k13', kana: 'ス', romaji: 'su', visual: 'สูท', mnemonic: 'ตัว ス ดูเหมือนคนใส่สูทนิด ๆ', img: 'images/K13.png' },
     { id: 'k14', kana: 'セ', romaji: 'se', visual: 'เซ', mnemonic: 'คนเดิน "เซ" เสียการทรงตัว', img: 'images/K14.png' },
-    { id: 'k15', kana: 'ソ', romaji: 'so', visual: 'sad', mnemonic: 'โซแซด (So sad) หน้าคนมองลงพื้น', img: 'images/K15.png' },
+    { id: 'k15', kana: 'ソ', romaji: 'so', visual: 'sad', mnemonic: 'โซแซด (So sad) หน้าคนมองลงพื้น', img: 'images/k15.png' },
 
     // วรรค T (ท/ต/ช)
     { id: 'k16', kana: 'タ', romaji: 'ta', visual: 'ตา', mnemonic: 'คล้ายตัว T (ตา)', img: 'images/K16.png' },
