@@ -62,7 +62,7 @@
 
                 <div class="stats-row">
                     <span class="stat-pill">
-                        <svg class="icon icon-sm"><use href="#icon-zap"/></svg>
+                        <svg class="icon icon-sm icon-pulse"><use href="#icon-zap"/></svg>
                         Streak <strong id="home-streak">1</strong> วัน
                     </span>
                     <span class="stat-pill">
@@ -71,6 +71,10 @@
                     </span>
                 </div>
             </div>
+
+            <button class="btn-icon top-right" onclick="toggleInfoModal(true)" aria-label="วิธีใช้งาน">
+                <svg class="icon"><use href="#icon-info"/></svg>
+            </button>
 
             <div class="button-group mt-20">
                 <button class="btn btn-primary" onclick="startLearn()">
@@ -88,16 +92,22 @@
             </div>
         </div>
 
-        <div class="info-panel card">
-            <h3><svg class="icon"><use href="#icon-info"/></svg> แนะนำการใช้งาน</h3>
-            <ul>
-                <li><strong>เริ่มเรียน</strong> — เรียนรู้คาตาคานะใหม่ทีละตัว พร้อมภาพช่วยจำและวิธีจำเพื่อสร้างการเชื่อมโยงในสมอง</li>
-                <li><strong>แบบทดสอบ</strong> — สุ่มคำถามประเมินความจำ พร้อมระบบคำนวณดาว เวลาที่ใช้ และเก็บบันทึกความแม่นยำ</li>
-                <li><strong>ทบทวน</strong> — ระบบ Flashcard สำหรับทบทวนเน้นเฉพาะตัวที่เพิ่งตอบผิด</li>
-                <li><strong>สถิติผู้ใช้</strong> — ติดตามความต่อเนื่องในการเรียนด้วย Streak และเปอร์เซ็นต์ความแม่นยำเฉลี่ย</li>
-            </ul>
-            <hr class="divider">
-            <p class="text-small"><strong>จุดประสงค์:</strong> สื่อชิ้นนี้สร้างขึ้นเพื่อแก้ปัญหาการลืมตัวอักษร โดยประยุกต์ใช้เทคนิค Mnemonic (ภาพช่วยจำ) ร่วมกับ Spaced Repetition (การทบทวนซ้ำ)</p>
+        <!-- ================= โมดัลแนะนำการใช้งาน (กดเปิด/ปิดได้) ================= -->
+        <div id="info-modal" class="modal-overlay hidden" onclick="closeModalOnBackdrop(event)">
+            <div class="modal-box card">
+                <button class="modal-close" onclick="toggleInfoModal(false)" aria-label="ปิด">
+                    <svg class="icon"><use href="#icon-x"/></svg>
+                </button>
+                <h3 class="modal-title"><svg class="icon"><use href="#icon-info"/></svg> แนะนำการใช้งาน</h3>
+                <ul>
+                    <li><strong>เริ่มเรียน</strong> — เรียนรู้คาตาคานะใหม่ทีละตัว พร้อมภาพช่วยจำและวิธีจำเพื่อสร้างการเชื่อมโยงในสมอง</li>
+                    <li><strong>แบบทดสอบ</strong> — สุ่มคำถามประเมินความจำ พร้อมระบบคำนวณดาว เวลาที่ใช้ และเก็บบันทึกความแม่นยำ</li>
+                    <li><strong>ทบทวน</strong> — ระบบ Flashcard สำหรับทบทวนเน้นเฉพาะตัวที่เพิ่งตอบผิด</li>
+                    <li><strong>สถิติผู้ใช้</strong> — ติดตามความต่อเนื่องในการเรียนด้วย Streak และเปอร์เซ็นต์ความแม่นยำเฉลี่ย</li>
+                </ul>
+                <hr class="divider">
+                <p class="text-small"><strong>จุดประสงค์:</strong> สื่อชิ้นนี้สร้างขึ้นเพื่อแก้ปัญหาการลืมตัวอักษร โดยประยุกต์ใช้เทคนิค Mnemonic (ภาพช่วยจำ) ร่วมกับ Spaced Repetition (การทบทวนซ้ำ)</p>
+            </div>
         </div>
 
         <!-- ================= กล่องข้อควรระวัง (มุมขวาเฉพาะหน้า Learn) ================= -->

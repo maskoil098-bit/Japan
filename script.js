@@ -151,33 +151,32 @@ function saveUserStats() {
 function showPage(pageId) {
     document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
     document.getElementById(pageId).classList.add('active');
-    
-    // 🎯 ถ้ากดเปิดหน้า "เริ่มเรียน" ให้โหลดตัวอักษรล่าสุดที่ค้างไว้มาทำต่อ
+
     if (pageId === 'page-learn') {
-        currentLearnIdx = userData.learnedIndex; // ดึงค่าล่าสุดที่เรียนค้างไว้มาใส่
-        updateLearnCard();     
+        updateLearnCard();
     }
 
-    const infoPanel = document.querySelector('.info-panel');
-    if (infoPanel) {
-        if (pageId === 'page-home') {
-            infoPanel.style.display = 'block';
-        } else {
-            infoPanel.style.display = 'none';
-        }
-    }
-    
     const cautionPanel = document.getElementById('caution-panel');
     if (cautionPanel) {
         if (pageId !== 'page-learn') cautionPanel.classList.add('hidden');
         else updateLearnCard();
     }
-    
+
     if(pageId === 'page-home') updateHomeState();
 }
 function startLearn() {
-    currentLearnIdx = userData.learnedIndex; // เริ่มจากจุดที่เรียนค้างไว้ล่าสุด
+    currentLearnIdx = 0; // เริ่มเรียนคำแรกใหม่เสมอ
     showPage('page-learn');
+}
+
+// ================= โมดัลแนะนำการใช้งาน =================
+function toggleInfoModal(show) {
+    const modal = document.getElementById('info-modal');
+    if (!modal) return;
+    modal.classList.toggle('hidden', !show);
+}
+function closeModalOnBackdrop(event) {
+    if (event.target.id === 'info-modal') toggleInfoModal(false);
 }
 
 function updateHomeState() {
@@ -200,12 +199,19 @@ function updateHomeState() {
 
 // ================= ระบบเสียง =================
 function playSound(text) {
-    if ('speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'ja-JP';
-        utterance.rate = 0.8;
-        window.speechSynthesis.speak(utterance);
-    }
+    if (!('speechSynthesis' in window)) return;
+
+    // ยกเลิกเสียงที่ค้างคิวอยู่ก่อน ไม่งั้นเสียงจะทับกันจนฟังดูสั้น/ขาดหาย (โดยเฉพาะบนมือถือ)
+    window.speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'ja-JP';
+    utterance.rate = 0.65;
+    utterance.pitch = 1;
+    utterance.volume = 1;
+
+    // มือถือบางรุ่นต้องรอให้ cancel() เคลียร์คิวก่อนค่อยพูด ไม่งั้นคำสั้นๆ จะถูกตัดต้น/ท้าย
+    setTimeout(() => window.speechSynthesis.speak(utterance), 60);
 }
 
 // ================= ระบบเรียน (Learn) =================
@@ -269,9 +275,10 @@ function updateLearnCard() {
     document.getElementById('learn-progress-text').innerText = `${currentLearnIdx + 1} / ${katakanaData.length}`;
     document.getElementById('learn-progress-fill').style.width = `${((currentLearnIdx + 1) / katakanaData.length) * 100}%`;
     
-    // บันทึกความคืบหน้าสูงสุดไว้ดูที่หน้า Home
-    if(currentLearnIdx > userData.learnedIndex) {
-        userData.learnedIndex = currentLearnIdx;
+    // บันทึกความคืบหน้าสูงสุดไว้ดูที่หน้า Home (นับเป็นจำนวนตัวที่เรียนแล้ว ไม่ใช่ index)
+    let learnedCount = currentLearnIdx + 1;
+    if (learnedCount > userData.learnedIndex) {
+        userData.learnedIndex = learnedCount;
         saveUserStats();
     }
     
@@ -518,5 +525,4 @@ function spawnPetals() {
 spawnPetals();
 preloadAllImages();
 checkStreak();
-updateLearnCard();
 updateHomeState();
