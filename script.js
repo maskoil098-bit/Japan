@@ -33,37 +33,37 @@ const katakanaData = [
     { id: 'k22', kana: 'ニ', romaji: 'ni', visual: 'บรรได', mnemonic: 'บันไดไม้คล้ายตัวอักษร"ニ"', img: 'images/K22.png' },
     { id: 'k23', kana: 'ヌ', romaji: 'nu', visual: 'นู้ดเดิล', mnemonic: 'ตะเกียบคีบเส้นบะหมี่ (Noodle)', img: 'images/K23.png' },
     { id: 'k24', kana: 'ネ', romaji: 'ne', visual: 'เนคไท', mnemonic: 'ลาย "เนคไท" (Necktie)', img: 'images/K24.png' },
-    { id: 'k25', kana: 'ノ', romaji: 'no', visual: 'จมูก', mnemonic: 'จมูกคนโด่งๆ โนส (Nose)', img: 'images/K25.png' },
+    { id: 'k25', kana: 'ノ', romaji: 'no', visual: 'จมูก', mnemonic: 'จมูกคนโด่งๆ "โนส" (Nose)', img: 'images/K25.png' },
 
     // วรรค H (ฮ/ห/ฟ)
-    { id: 'k26', kana: 'ハ', romaji: 'ha', visual: 'หัวเราะ', mnemonic: 'คนแก่กำลังหัวเราะ ฮ่าๆ (Ha)', img: 'images/K26.png' },
+    { id: 'k26', kana: 'ハ', romaji: 'ha', visual: 'หัวเราะ', mnemonic: 'คนแก่กำลังหัวเราะ "ฮ่าๆ" (Ha)', img: 'images/K26.png' },
     { id: 'k27', kana: 'ヒ', romaji: 'hi', visual: 'Heels', mnemonic: 'ส้นรองเท้าสูง High-Heels', img: 'images/K27.png' },
     { id: 'k28', kana: 'フ', romaji: 'fu', visual: 'ฟูจิ', mnemonic: 'ยอดภูเขาไฟ "ฟูจิ" (Fuji)', img: 'images/K28.png' },
     { id: 'k29', kana: 'ヘ', romaji: 'he', visual: 'เฮเว่น', mnemonic: 'ลูกศรชี้ขึ้นสวรรค์ (Heaven)', img: 'images/K29.png' },
     { id: 'k30', kana: 'ホ', romaji: 'ho', visual: 'โฮลี่', mnemonic: 'ไม้กางเขนศักดิ์สิทธิ์ (Holy)', img: 'images/K30.png' },
 
     // วรรค M (ม)
-    { id: 'k31', kana: 'マ', romaji: 'ma', visual: 'มาร์ตินี่', mnemonic: 'แก้ว "มาร์ตินี่" (Martini)', img: 'https://picsum.photos/seed/k31/200/200' },
-    { id: 'k32', kana: 'ミ', romaji: 'mi', visual: 'มิสไซล์', mnemonic: 'จรวด "มิสไซล์" 3 ลูก (Missile)', img: 'https://picsum.photos/seed/k32/200/200' },
-    { id: 'k33', kana: 'ム', romaji: 'mu', visual: 'มูส', mnemonic: 'เขากวาง "มูส" (Moose)', img: 'https://picsum.photos/seed/k33/200/200' },
-    { id: 'k34', kana: 'メ', romaji: 'me', visual: 'เมล', mnemonic: 'กากบาทปิดจดหมาย เมล (Mail)', img: 'https://picsum.photos/seed/k34/200/200' },
-    { id: 'k35', kana: 'モ', romaji: 'mo', visual: 'มอนิเตอร์', mnemonic: 'จอทีวี "มอนิเตอร์" (Monitor)', img: 'https://picsum.photos/seed/k35/200/200' },
+    { id: 'k31', kana: 'マ', romaji: 'ma', visual: 'มาร์ตินี่', mnemonic: 'แก้ว "มาร์ตินี่" (Martini)', img: 'images/K31.png' },
+    { id: 'k32', kana: 'ミ', romaji: 'mi', visual: 'มิสไซล์', mnemonic: 'จรวด "มิสไซล์" 3 ลูก (Missile)', img: 'images/K32.png' },
+    { id: 'k33', kana: 'ム', romaji: 'mu', visual: 'มูส', mnemonic: 'เขากวาง "มูส" (Moose)', img: 'images/K33.png' },
+    { id: 'k34', kana: 'メ', romaji: 'me', visual: 'เมล', mnemonic: 'กากบาทปิดจดหมาย "เมล" (Mail)', img: 'images/K34.png' },
+    { id: 'k35', kana: 'モ', romaji: 'mo', visual: 'มอนิเตอร์', mnemonic: 'จอทีวี "มอนิเตอร์" (Monitor)', img: 'images/K35.png' },
 
     // วรรค Y (ย)
-    { id: 'k36', kana: 'ヤ', romaji: 'ya', visual: 'แก้วแตก', mnemonic: 'แก้วร้าวร้อง "ย๊าก!"', img: 'https://picsum.photos/seed/k36/200/200' },
-    { id: 'k37', kana: 'ユ', romaji: 'yu', visual: 'ยูเทิร์น', mnemonic: 'ป้ายเลี้ยวกลับ "ยูเทิร์น" (U-turn)', img: 'https://picsum.photos/seed/k37/200/200' },
-    { id: 'k38', kana: 'ヨ', romaji: 'yo', visual: 'โยโย่', mnemonic: 'เชือกพันลูก "โยโย่" (Yoyo)', img: 'https://picsum.photos/seed/k38/200/200' },
+    { id: 'k36', kana: 'ヤ', romaji: 'ya', visual: 'Yacht', mnemonic: 'เรือยอชต์ (Yacht)"', img: 'images/K36.png' },
+    { id: 'k37', kana: 'ユ', romaji: 'yu', visual: 'ยูเทิร์น', mnemonic: 'ป้ายเลี้ยวกลับ "ยูเทิร์น" (U-turn)', img: 'images/K37.png' },
+    { id: 'k38', kana: 'ヨ', romaji: 'yo', visual: 'โยโย่', mnemonic: 'เชือกพันลูก "โยโย่" (Yoyo)', img: 'images/K38.png' },
 
     // วรรค R (ร/ล)
-    { id: 'k39', kana: 'ラ', romaji: 'ra', visual: 'ราเมน', mnemonic: 'ชาม "ราเมน" (Ramen)', img: 'https://picsum.photos/seed/k39/200/200' },
-    { id: 'k40', kana: 'リ', romaji: 'ri', visual: 'ริบบิ้น', mnemonic: 'สาย "ริบบิ้น" (Ribbon) สองเส้น', img: 'https://picsum.photos/seed/k40/200/200' },
-    { id: 'k41', kana: 'ル', romaji: 'ru', visual: 'รากไม้', mnemonic: 'รากต้นไม้ รูท (Root)', img: 'https://picsum.photos/seed/k41/200/200' },
-    { id: 'k42', kana: 'レ', romaji: 're', visual: 'เรดาร์', mnemonic: 'เครื่องรับสัญญาณ "เรดาร์" (Radar)', img: 'https://picsum.photos/seed/k42/200/200' },
-    { id: 'k43', kana: 'ロ', romaji: 'ro', visual: 'โรล', mnemonic: 'กล่องสี่เหลี่ยม โรล (Roll)', img: 'https://picsum.photos/seed/k43/200/200' },
+    { id: 'k39', kana: 'ラ', romaji: 'ra', visual: 'Rail', mnemonic: 'รางรถไฟ (Rail)', img: 'images/K39.png' },
+    { id: 'k40', kana: 'リ', romaji: 'ri', visual: 'Ribbon', mnemonic: 'ริบบิ้น (Ribbon)', img: 'images/K40.png' },
+    { id: 'k41', kana: 'ル', romaji: 'ru', visual: 'รากไม้', mnemonic: 'รากต้นไม้ "รูท" (Root)', img: 'images/K41.png' },
+    { id: 'k42', kana: 'レ', romaji: 're', visual: 'เรดาร์', mnemonic: 'เครื่องรับสัญญาณ "เรดาร์" (Radar)', img: 'images/K42.png' },
+    { id: 'k43', kana: 'ロ', romaji: 'ro', visual: 'เค้กโรล', mnemonic: 'เป็นเค้กทรงคล้ายสี่เหลี่ยม "โรล" (Roll)', img: 'images/K43.png' },
 
     // วรรค W (ว) และ N (น/ง/ม)
-    { id: 'k44', kana: 'ワ', romaji: 'wa', visual: 'ไวน์', mnemonic: 'แก้ว "ไวน์" (Wine)', img: 'https://picsum.photos/seed/k44/200/200' },
-    { id: 'k45', kana: 'ン', romaji: 'n', visual: 'ตาเดียว', mnemonic: 'อึน... หน้าคนยิ้มตาเดียว', img: 'https://picsum.photos/seed/k46/200/200' }
+    { id: 'k44', kana: 'ワ', romaji: 'wa', visual: 'ไวน์', mnemonic: 'แก้ว "ไวน์" (Wine)', img: 'images/K44.png' },
+    { id: 'k45', kana: 'ン', romaji: 'n', visual: 'ตาเดียว', mnemonic: 'อึน... หน้าคนยิ้มตาเดียว', img: 'images/K45.png' }
 ];
 
 // ================= ข้อมูลคู่สับสน (จะโชว์มุมขวาอัตโนมัติ) =================
